@@ -357,6 +357,10 @@
 	text-align: left;
 }
 
+#djDebug .djCacheHideStacktraceDiv tbody th {
+	text-align: left;
+}
+
 #djDebug .djSqlExplain td {
 	white-space: pre;
 }
