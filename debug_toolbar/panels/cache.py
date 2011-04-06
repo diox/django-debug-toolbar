@@ -97,6 +97,21 @@ class CacheStatTracker(BaseCache):
     @_send_call_signal
     def clear(self):
         return self.cache.clear()
+        
+    def make_key(self, key, version=None):
+        return self.cache.make_key(key, version)
+
+    def __contains__(self, key):
+        return self.cache.__contains__(key)
+
+    def validate_key(self, key):
+        return self.cache.validate_key(key)
+
+    def incr_version(self, key, delta=1, version=None):
+        return self.cache.incr_version(key, delta, version)
+
+    def decr_version(self, key, delta=1, version=None):
+        return self.cache.decr_version(key, delta, version)
 
 class CacheDebugPanel(DebugPanel):
     """
