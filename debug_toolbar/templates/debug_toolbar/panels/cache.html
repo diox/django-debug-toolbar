@@ -1,54 +1,71 @@
 {% load i18n %}
+<h3>{% trans "Summary" %}</h3>
 <table>
-	<colgroup>
-		<col width="12%"/>
-		<col width="12%"/>
-		<col width="12%"/>
-		<col width="12%"/>
-		<col width="12%"/>
-		<col width="12%"/>
-		<col width="12%"/>
-		<col width="12%"/>
-	</colgroup>
+    <thead>
 	<tr>
 		<th>{% trans "Total Calls" %}</th>
-		<td>{{ cache_calls }}</td>
 		<th>{% trans "Total Time" %}</th>
-		<td>{{ cache_time }}ms</td>
-		<th>{% trans "Hits" %}</th>
-		<td>{{ cache.hits }}</td>
-		<th>{% trans "Misses" %}</th>
-		<td>{{ cache.misses }}</td>
+		<th>{% trans "Cache Hits" %}</th>
+		<th>{% trans "Cache Misses" %}</th>
 	</tr>
+	</thead>
+	<tbody>
 	<tr>
-		<th>gets</th>
-		<td>{{ cache.gets }}</td>
-		<th>sets</th>
-		<td>{{ cache.sets }}</td>
-		<th>deletes</th>
-		<td>{{ cache.deletes }}</td>
-		<th>get_many</th>
-		<td>{{ cache.get_many }}</td>
+	    <td> {{ cache_total_calls }} </td>
+	    <td> {{ cache_time }} ms </td>
+	    <td> {{ cache_hits }} </td>
+	    <td> {{ cache_misses }}</td>
 	</tr>
+	</tbody>	
 </table>
-{% if cache.calls %}
-<h3>{% trans "Breakdown" %}</h3>
+<h3>{% trans "Stats by command" %}</h3>
+<table>
+    {% for key, value in cache_stats.iteritems %}
+    <tr class="{% cycle 'djDebugOdd' 'djDebugEven' %}">
+        <td> {{ key }} </td>
+        <td> {{ value }} </td>	        
+    </tr>
+    {% endfor %}
+</table>
+{% if cache_calls %}
+<h3>{% trans "Queries" %}</h3>
 <table>
 	<thead>
 		<tr>
 			<th>{% trans "Time" %}&nbsp;(ms)</th>
 			<th>{% trans "Type" %}</th>
+			<th>{% trans 'Stacktrace' %}</th>
 			<th>{% trans "Parameters" %}</th>
-			<th>{% trans "Function" %}</th>
 		</tr>
 	</thead>
 	<tbody>
-		{% for query in cache.calls %}
+		{% for query in cache_calls %}
 			<tr class="{% cycle 'row1' 'row2' %}">
-				<td>{{ query.0|floatformat:"4" }}</td>
-				<td>{{ query.1|escape }}</td>
-				<td>{{ query.2|escape }}</td>
-				<td><acronym title="{{ query.3.0 }}:{{ query.3.1 }}">{{ query.3.2|escape }}</acronym>: {{ query.3.3.0|escape }}</td>
+				<td>{{ query.time|floatformat:"4" }}</td>
+				<td>{{ query.name|escape }}</td>
+				<td style="width: 10em;">
+					<div class="djCacheShowStacktraceDiv"><a class="djCacheShowStacktrace" href="#">Toggle Stacktrace</a></div>
+				</td>
+				<td>{{ query.args|escape }}
+				{% with query.trace as stacktrace %}
+				<div class="djCacheHideStacktraceDiv" style="display: none;">
+					<table>
+						<tr>
+							<th>{% trans "Line" %}</th>
+							<th>{% trans "Method" %}</th>
+							<th>{% trans "File" %}</th>
+						</tr>
+						{% for file, line, method in stacktrace %}
+							<tr>
+								<td>{{ line }}</td>
+								<td><code>{{ method|escape }}</code></td>
+								<td><code>{{ file|escape }}</code></td>
+							</tr>
+						{% endfor %}
+					</table>
+				</div>
+				{% endwith %}
+				</td>
 			</tr>
 		{% endfor %}
 	</tbody>

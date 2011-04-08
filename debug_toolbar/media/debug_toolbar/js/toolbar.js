@@ -66,6 +66,10 @@
 				djdt.toggle_content($('.djSQLHideStacktraceDiv', $(this).parents('tr')));
 				return false;
 			});
+			$('#djDebugCachePanel a.djCacheShowStacktrace').click(function() {
+				djdt.toggle_content($('.djCacheHideStacktraceDiv', $(this).parents('tr')));
+				return false;
+			});			
 			$('#djHideToolBarButton').click(function() {
 				djdt.hide_toolbar(true);
 				return false;
