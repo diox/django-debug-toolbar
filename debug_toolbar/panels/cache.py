@@ -68,7 +68,7 @@ class CacheStatTracker(BaseCache):
 
     @_send_call_signal
     def delete(self, key, version=None):
-        return self.cache.get(key, version)
+        return self.cache.delete(key, version)
 
     @_send_call_signal
     def get_many(self, keys, version=None):
