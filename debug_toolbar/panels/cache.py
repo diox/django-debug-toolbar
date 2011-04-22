@@ -45,7 +45,7 @@ class CacheStatTracker(BaseCache):
             del cur_frame
             
             cache_call.send(sender=self, time_taken=t, name=method.__name__,
-                            return_value=value, args=args[0], 
+                            return_value=value, args=args and args[0] or None,
                             trace=stacktrace, template_info=template_info)
             return value
         return wrapped
